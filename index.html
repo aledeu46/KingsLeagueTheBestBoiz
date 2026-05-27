@@ -8,26 +8,40 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Arial', sans-serif; }
         body { background-color: #111; color: #fff; padding-top: 80px; padding-bottom: 40px; }
         h1, h2, h3 { color: #f39c12; text-transform: uppercase; margin-bottom: 15px; }
+        
+        /* NAVBAR FISSA */
         .navbar { background-color: #000; position: fixed; top: 0; left: 0; width: 100%; height: 60px; display: flex; align-items: center; padding: 0 20px; border-bottom: 2px solid #f39c12; z-index: 1000; }
-        .nav-title { margin-left: auto; color: #f39c12; font-weight: bold; font-size: 1.2rem; }
+        .nav-title { margin-left: auto; color: #f39c12; font-weight: bold; font-size: 1.2rem; cursor: pointer; user-select: none; }
+        
+        /* MENU A TENDINA FUNZIONANTE */
         .dropdown { position: relative; display: inline-block; }
         .dropbtn { background-color: #f39c12; color: #000; padding: 10px 15px; font-size: 16px; border: none; cursor: pointer; font-weight: bold; border-radius: 5px; }
-        .dropdown-content { display: none; position: absolute; background-color: #000; min-width: 200px; box-shadow: 0px 8px 16px rgba(243,156,18,0.2); z-index: 1; border: 1px solid #f39c12; border-radius: 5px; margin-top: 5px; }
+        .dropdown-content { display: none; position: absolute; background-color: #000; min-width: 200px; box-shadow: 0px 8px 16px rgba(243,156,18,0.2); z-index: 1001; border: 1px solid #f39c12; border-radius: 5px; margin-top: 5px; }
         .dropdown-content a { color: #fff; padding: 12px 16px; text-decoration: none; display: block; font-weight: bold; }
         .dropdown-content a:hover { background-color: #f39c12; color: #000; }
-        .dropdown:hover .dropdown-content { display: block; }
+        .dropdown-content.show { display: block; }
+
+        /* SEZIONI PAGINA */
         .section { padding: 20px; max-width: 1000px; margin: 0 auto; display: none; }
         .section.active { display: block; }
-        .admin-panel { background: #222; border: 1px solid #f39c12; padding: 20px; border-radius: 8px; margin-bottom: 30px; }
+        
+        /* PANNELLO ADMIN (NASCOSTO DI DEFAULT) */
+        .admin-panel { background: #222; border: 2px dashed #f39c12; padding: 20px; border-radius: 8px; margin-bottom: 30px; display: none; }
+        
+        /* ELEMENTI DI INPUT */
         input, select, button { width: 100%; padding: 10px; margin: 8px 0; background: #333; border: 1px solid #555; color: #fff; border-radius: 5px; font-size: 1rem; }
         input:focus, select:focus { border-color: #f39c12; outline: none; }
         button { background: #f39c12; color: #000; font-weight: bold; cursor: pointer; border: none; transition: 0.2s; text-transform: uppercase; }
         button:hover { background: #e08e0b; }
+        
+        /* SCHEDE E CONTENUTI */
         .card { background: #1a1a1a; border: 1px solid #333; padding: 20px; border-radius: 8px; margin-bottom: 15px; }
         .flex-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; }
         .badge { background: #f39c12; color: #000; padding: 2px 6px; border-radius: 3px; font-weight: bold; font-size: 0.8rem; display: inline-block; }
         ul { list-style: none; }
         li { padding: 8px 0; border-bottom: 1px solid #222; }
+        
+        /* FINESTRA PROFILO GIOCATORE */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2000; align-items: center; justify-content: center; }
         .modal-content { background: #111; border: 2px solid #f39c12; padding: 30px; border-radius: 10px; max-width: 400px; width: 90%; text-align: center; position: relative; }
         .close-btn { position: absolute; top: 10px; right: 15px; color: #f39c12; font-size: 24px; cursor: pointer; }
@@ -35,22 +49,25 @@
 </head>
 <body>
 
+    <!-- NAVBAR -->
     <nav class="navbar">
         <div class="dropdown">
-            <button class="dropbtn">MENU ☰</button>
-            <div class="dropdown-content">
+            <button class="dropbtn" onclick="toggleMenu(event)">MENU ☰</button>
+            <div id="myDropdown" class="dropdown-content">
                 <a href="#" onclick="showSection('risultati')">Risultati & Voti</a>
                 <a href="#" onclick="showSection('squadre')">Squadre & Statistiche</a>
                 <a href="#" onclick="showSection('mvp')">MVP</a>
             </div>
         </div>
-        <div class="nav-title">KINGS LEAGUE - THE BEST BOYZ</div>
+        <!-- FACENDO DOPPIO CLICK RAPIDO QUI SOPRA ATTIVI/NASCONDI I PANNELLI ADMIN -->
+        <div class="nav-title" ondblclick="toggleAdminMode()">KINGS LEAGUE - THE BEST BOYZ</div>
     </nav>
 
+    <!-- SEZIONE 1: RISULTATI & VOTI -->
     <div id="risultati" class="section active">
         <h2>Risultati & Azioni Salienti</h2>
         
-        <div class="admin-panel">
+        <div class="admin-panel class-admin">
             <h3>Pannello Admin - Inserisci Partita</h3>
             <input type="text" id="match-teams" placeholder="Es. Squadra A vs Squadra B">
             <input type="text" id="match-score" placeholder="Es. 4 - 2">
@@ -72,14 +89,13 @@
             <button type="button" onclick="addActionToList()">Aggiungi Azione alla Partita</button>
             
             <ul id="temporary-actions-list" style="margin: 10px 0; background: #111; padding: 10px; border-radius: 4px; border: 1px dashed #555;"></ul>
-            
             <button onclick="saveMatch()" style="background: #27ae60; color: #fff; margin-top: 15px;">Pubblica Partita nel Tabellone</button>
         </div>
 
         <div id="matches-container"></div>
 
         <h2 style="margin-top: 50px;">Voti Ultima Partita (6 Giocatori)</h2>
-        <div class="admin-panel">
+        <div class="admin-panel class-admin">
             <h3>Pannello Admin - Inserisci / Aggiorna Voti</h3>
             <div id="voti-inputs-grid" class="flex-container"></div>
             <button onclick="saveVotes()" style="margin-top: 15px;">Salva Voti Giocatori</button>
@@ -91,27 +107,29 @@
         </div>
     </div>
 
+    <!-- SEZIONE 2: SQUADRE -->
     <div id="squadre" class="section">
         <h2>Le 4 Squadre del Torneo</h2>
-        <p style="margin-bottom: 20px; color: #aaa;">Clicca sul nome di un giocatore per visualizzare il suo profilo dettagliato e la media voti calcolata.</p>
-        
+        <p style="margin-bottom: 20px; color: #aaa;">Clicca sul nome di un giocatore per visualizzare il suo profilo dettagliato e la media voti.</p>
         <div id="teams-container" class="flex-container"></div>
     </div>
 
+    <!-- SEZIONE 3: MVP -->
     <div id="mvp" class="section">
         <h2>Miglior Giocatore della Partita (MVP)</h2>
         
-        <div class="admin-panel">
+        <div class="admin-panel class-admin">
             <h3>Pannello Admin - Assegna MVP</h3>
             <input type="text" id="mvp-name" placeholder="Nome Giocatore MVP">
             <input type="text" id="mvp-match" placeholder="Partita / Giornata (Es. Giornata 1)">
-            <input type="text" id="mvp-img-url" placeholder="Incolla URL Foto Giocatore (es. link da Imgur o web)">
+            <input type="text" id="mvp-img-url" placeholder="Incolla URL Foto Giocatore (es. link da Imgur)">
             <button onclick="saveMVP()">Salva MVP</button>
         </div>
 
         <div id="mvp-container" class="flex-container"></div>
     </div>
 
+    <!-- MODALE DETTAGLI GIOCATORE -->
     <div id="player-modal" class="modal">
         <div class="modal-content">
             <span class="close-btn" onclick="closeModal()">&times;</span>
@@ -138,8 +156,87 @@
             { id: 5, nome: "Marco", cognome: "Gialli", squadra: "Team Oro", gol: 0, assist: 0, gialli: 0, rossi: 0, autogol: 0, rigoriSbagliati: 0, voti: [] },
             { id: 6, nome: "Paolo", cognome: "Violi", squadra: "Team Oro", gol: 0, assist: 0, gialli: 0, rossi: 0, autogol: 0, rigoriSbagliati: 0, voti: [] },
             { id: 7, nome: "Alessandro", cognome: "Silva", squadra: "Team Giallo", gol: 0, assist: 0, gialli: 0, rossi: 0, autogol: 0, rigoriSbagliati: 0, voti: [] },
+
             { id: 8, nome: "Stefano", cognome: "Ferrari", squadra: "Team Giallo", gol: 0, assist: 0, gialli: 0, rossi: 0, autogol: 0, rigoriSbagliati: 0, voti: [] },
             { id: 9, nome: "Francesco", cognome: "Russo", squadra: "Team Giallo", gol: 0, assist: 0, gialli: 0, rossi: 0, autogol: 0, rigoriSbagliati: 0, voti: [] },
             { id: 10, nome: "Davide", cognome: "Esposito", squadra: "Team Best", gol: 0, assist: 0, gialli: 0, rossi: 0, autogol: 0, rigoriSbagliati: 0, voti: [] },
             { id: 11, nome: "Andrea", cognome: "Romano", squadra: "Team Best", gol: 0, assist: 0, gialli: 0, rossi: 0, autogol: 0, rigoriSbagliati: 0, voti: [] },
-{ id: 12, nome: "Federico", cognome: "Ricci", squadra: "Team Best", gol: 0, assist: 0, gialli: 0, rossi: 0, autogol: 0, rigoriSbagliati: 0, voti: [] }];let players = JSON.parse(localStorage.getItem('kl_players')) || defaultPlayers;let matches = JSON.parse(localStorage.getItem('kl_matches')) || [];let mvps = JSON.parse(localStorage.getItem('kl_mvps')) || [];let currentMatchActions = [];function showSection(sectionId) {document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));document.getElementById(sectionId).classList.add('active');}function addActionToList() {const type = document.getElementById('action-type').value;const player = document.getElementById('action-player').value.trim();const minute = document.getElementById('action-minute').value;if(!player || !minute) { alert("Attenzione: Inserisci il nome del giocatore e il minuto dell'azione!"); return; }const actionObj = { type, player, minute };currentMatchActions.push(actionObj);const li = document.createElement('li');li.textContent = ${minute}' - ${player} (${type});document.getElementById('temporary-actions-list').appendChild(li);updatePlayerStats(player, type);document.getElementById('action-player').value = '';document.getElementById('action-minute').value = '';}function updatePlayerStats(fullName, type) {const p = players.find(x => ${x.nome} ${x.cognome}.toLowerCase() === fullName.toLowerCase());if (p) {if (type === "Gol" || type === "Rigore Segnato" || type === "Rigore Presidenziale") p.gol++;if (type === "Assist") p.assist++;if (type === "Cartellino Giallo") p.gialli++;if (type === "Cartellino Rosso") p.rossi++;if (type === "Autogol") p.autogol++;if (type === "Rigore Sbagliato" || type === "Rigore Presidenziale Sbagliato") p.rigoriSbagliati++;localStorage.setItem('kl_players', JSON.stringify(players));}}function saveMatch() {const teams = document.getElementById('match-teams').value.trim();const score = document.getElementById('match-score').value.trim();if(!teams || !score) { alert("Attenzione: Compila i campi Squadre e Risultato Finale!"); return; }const newMatch = { teams, score, actions: currentMatchActions };matches.push(newMatch);localStorage.setItem('kl_matches', JSON.stringify(matches));currentMatchActions = [];document.getElementById('match-teams').value = '';document.getElementById('match-score').value = '';document.getElementById('temporary-actions-list').innerHTML = '';renderMatches();renderTeams();}function renderMatches() {const container = document.getElementById('matches-container');container.innerHTML = '';matches.forEach(m => {let actionsHTML = '';m.actions.forEach(a => {actionsHTML += <li>⏱️ ${a.minute}' - <b>${a.player}</b> <span class="badge">${a.type}</span></li>;});container.innerHTML += <div class="card"> <h3>${m.teams}</h3> <h2 style="color:#fff;">Risultato: <span style="color:#f39c12;">${m.score}</span></h2> <ul style="margin-top:10px; background:#222; padding:10px; border-radius:5px;">${actionsHTML || 'Nessuna azione saliente inserita.'}</ul> </div>;});}function setupVotesForm() {const container = document.getElementById('voti-inputs-grid');container.innerHTML = '';for(let i=1; i<=6; i++) {container.innerHTML += <div> <label style="color:#f39c12; font-weight:bold; font-size:0.85rem;">Giocatore ${i}</label> <input type="text" id="v-name-${i}" placeholder="Nome Cognome"> <input type="number" step="0.1" id="v-vote-${i}" placeholder="Voto (Es. 6.5)"> </div>;}}function saveVotes() {let entriesFound = false;for(let i=1; i<=6; i++) {const name = document.getElementById(v-name-${i}).value.trim();const vote = parseFloat(document.getElementById(v-vote-${i}).value);if(name && !isNaN(vote)) {entriesFound = true;const p = players.find(x => ${x.nome} ${x.cognome}.toLowerCase() === name.toLowerCase());if(p) { p.voti.push(vote); }}}if(entriesFound) {localStorage.setItem('kl_players', JSON.stringify(players));alert("Voti dei giocatori registrati con successo!");renderVotesList();for(let i=1; i<=6; i++) {document.getElementById(v-name-${i}).value = '';document.getElementById(v-vote-${i}).value = '';}} else {alert("Inserisci almeno un Nome e un Voto valido prima di salvare.");}}function renderVotesList() {const list = document.getElementById('votes-display-list');list.innerHTML = '';players.forEach(p => {if(p.voti.length > 0) {const ultimiVoti = p.voti.slice(-3).join(' | ');list.innerHTML += <li><b>${p.nome} ${p.cognome}</b> - Ultimi voti registrati: <span style="color:#f39c12">${ultimiVoti}</span></li>;}});}function renderTeams() {const container = document.getElementById('teams-container');container.innerHTML = '';const teamsMap = {};players.forEach(p => {if(!teamsMap[p.squadra]) teamsMap[p.squadra] = [];teamsMap[p.squadra].push(p);});for(let teamName in teamsMap) {let playersHTML = '';teamsMap[teamName].forEach(p => {playersHTML += <li style="cursor:pointer; color:#f39c12; font-weight:bold; padding:10px 0; border-bottom:1px dashed #333;" onclick="openPlayerModal(${p.id})"> 👤 ${p.nome} ${p.cognome} </li>;});container.innerHTML += <div class="card"> <h3 style="border-bottom: 2px solid #f39c12; padding-bottom:5px;">${teamName}</h3> <ul>${playersHTML}</ul> </div>;}}function openPlayerModal(playerId) {const p = players.find(x => x.id === playerId);if(!p) return;document.getElementById('modal-player-name').textContent = ${p.nome} ${p.cognome};document.getElementById('modal-player-team').textContent = p.squadra;let media = 0;if(p.voti && p.voti.length > 0) {let somma = p.voti.reduce((acc, v) => acc + v, 0);media = (somma / p.voti.length).toFixed(2);}document.getElementById('stat-media').textContent = media;document.getElementById('stat-gol').textContent = p.gol;document.getElementById('stat-assist').textContent = p.assist;document.getElementById('stat-gialli').textContent = p.gialli;document.getElementById('stat-rossi').textContent = p.rossi;document.getElementById('stat-autogol').textContent = p.autogol;document.getElementById('stat-rigori-sbagliati').textContent = p.rigoriSbagliati;document.getElementById('player-modal').style.display = 'flex';}function closeModal() {document.getElementById('player-modal').style.display = 'none';}function saveMVP() {const name = document.getElementById('mvp-name').value.trim();const match = document.getElementById('mvp-match').value.trim();const imgUrl = document.getElementById('mvp-img-url').value.trim() || 'placeholder.com';if(!name || !match) { alert("Nome giocatore e Partita/Giornata sono campi obbligatori."); return; }mvps.push({ name, match, imgUrl });localStorage.setItem('kl_mvps', JSON.stringify(mvps));document.getElementById('mvp-name').value = '';document.getElementById('mvp-match').value = '';document.getElementById('mvp-img-url').value = '';renderMVPs();}function renderMVPs() {const container = document.getElementById('mvp-container');container.innerHTML = '';mvps.forEach(m => {container.innerHTML += <div class="card" style="text-align:center;"> <img src="${m.imgUrl}" alt="Foto MVP" style="width:100%; max-height:220px; object-fit:cover; border-radius:5px; margin-bottom:10px; border: 1px solid #f39c12;"> <h3>${m.name}</h3> <p style="color:#aaa; font-size:0.9rem;">${m.match}</p> </div>;});}window.onload = function() {renderMatches();setupVotesForm();renderVotesList();renderTeams();renderMVPs();}
+            { id: 12, nome: "Federico", cognome: "Ricci", squadra: "Team Best", gol: 0, assist: 0, gialli: 0, rossi: 0, autogol: 0, rigoriSbagliati: 0, voti: [] }];
+        let players = JSON.parse(localStorage.getItem('kl_players')) ||defaultPlayers
+            ;let matches = JSON.parse(localStorage.getItem('kl_matches')) || []
+            ;let mvps = JSON.parse(localStorage.getItem('kl_mvps')) || []
+            ;let currentMatchActions = []
+            ;let adminMode = false;
+        /* APERTURA E CHIUSURA MENU */
+        function toggleMenu(event) {event.stopPropagation()
+            ;document.getElementById("myDropdown").classList.toggle("show")
+            ;
+                                   }window.onclick = function(event) 
+        {if (!event.target.matches('.dropbtn')) 
+        {let dropdowns = document.getElementsByClassName("dropdown-content")
+            ;for (let i = 0; i < dropdowns.length; i++) 
+        {let openDropdown = dropdowns[i];if (openDropdown.classList.contains('show')) 
+        {openDropdown.classList.remove('show');}
+        }
+        }
+        }
+            /* ATTIVAZIONE MODALITA' ADMIN (DOPPIO CLICK SUL TITOLO) */
+            function toggleAdminMode() {adminMode = !adminMode
+                ;let panels = document.getElementsByClassName("class-admin")
+                ;for (let i = 0; i < panels.length; i++) {panels[i].style.display = adminMode ? "block" : "none";
+                                                         }
+                                        alert(adminMode ? "Modalità Admin Attivata! Ora puoi inserire i dati." : "Modalità Admin Disattivata! I pannelli ora sono nascosti.")
+                                            ;
+                                       }function showSection(sectionId) 
+            {document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'))
+                ;document.getElementById(sectionId).classList.add('active');}function addActionToList() 
+            {const type = document.getElementById('action-type').value;const player = document.getElementById('action-player').value.trim()
+            ;const minute = document.getElementById('action-minute').value
+                ;if(!player || !minute) 
+            { alert("Attenzione: Inserisci il nome del giocatore e il minuto dell'azione!")
+                ; return; }const actionObj = { type, player, minute };currentMatchActions.push(actionObj)
+                ;const li = document.createElement('li');li.textContent = ${minute}' - ${player} (${type});document.getElementById('temporary-actions-list').appendChild(li)
+                ;updatePlayerStats(player, type)
+                ;document.getElementById('action-player').value = '';document.getElementById('action-minute').value = ''
+                ;
+            }function updatePlayerStats(fullName, type) 
+            {const p = players.find(x => ${x.nome} ${x.cognome}.toLowerCase() === fullName.toLowerCase());if (p) 
+            {if (type === "Gol" || type === "Rigore Segnato" || type === "Rigore Presidenziale") p.gol++;if (type === "Assist") p.assist++;if (type === "Cartellino Giallo") p.gialli++
+                ;if (type === "Cartellino Rosso") p.rossi++
+                ;if (type === "Autogol") p.autogol++
+                ;if (type === "Rigore Sbagliato" || type === "Rigore Presidenziale Sbagliato") p.rigoriSbagliati++;localStorage.setItem('kl_players', JSON.stringify(players))
+                ;
+            }
+            }function saveMatch() 
+            {const teams = document.getElementById('match-teams').value.trim()
+                ;const score = document.getElementById('match-score').value.trim()
+                ;if(!teams || !score) { alert("Attenzione: Compila i campi Squadre e Risultato Finale!")
+                ; return; }const newMatch = { teams, score, actions: currentMatchActions }
+                ;matches.push(newMatch);localStorage.setItem('kl_matches', JSON.stringify(matches))
+                ;currentMatchActions = [];document.getElementById('match-teams').value = ''
+                ;document.getElementById('match-score').value = ''
+                ;document.getElementById('temporary-actions-list').innerHTML = ''
+                ;renderMatches()
+                ;renderTeams()
+                ;
+            }function renderMatches() 
+            {const container = document.getElementById('matches-container');container.innerHTML = '';matches.forEach(m => {let actionsHTML = ''
+                ;m.actions.forEach(a => {actionsHTML += <li>⏱️ ${a.minute}' - <b>${a.player}</b> <span class="badge">${a.type}</span></li>;});container.innerHTML += <div class="card"> <h3>${m.teams}</h3> <h2 style="color:#fff
+                ;">Risultato: <span style="color:#f39c12
+                ;">${m.score}</span></h2> <ul style="margin-top:10px
+                ; background:#222
+                ; padding:10px; border-radius:5px;">${actionsHTML || 'Nessuna azione saliente inserita.'}</ul> </div>
+                ;
+                                        })
+                ;
+                                                                                                                          }function setupVotesForm() 
+            {const container = document.getElementById('voti-inputs-grid');container.innerHTML = ''
+                ;for(let i=1; i<=6; i++) 
+            {container.innerHTML += <div> <label style="color:#f39c12; font-weight:bold
+                ; font-size:0.85rem
+                ;">Giocatore ${i}</label> <input type="text" id="v-name-${i}" placeholder="Nome Cognome"> <input type="number" step="0.1" id="v-vote-${i}" placeholder="Voto (Es. 6.5)"> </div>
+                ;
+            }
+            }function saveVotes() 
+            {let entriesFound = false
+                ;for(let i=1; i<=6; i++) {const name = document.getElementById(v-name-${i}).value.trim();const vote = parseFloat(document.getElementById(v-vote-${i}).value);if(name && !isNaN(vote)) {entriesFound = true;const p = players.find(x => ${x.nome} ${x.cognome}.toLowerCase() === name.toLowerCase());if(p) { p.voti.push(vote); }}}if(entriesFound) {localStorage.setItem('kl_players', JSON.stringify(players));alert("Voti dei giocatori registrati con successo!");renderVotesList();for(let i=1; i<=6; i++) {document.getElementById(v-name-${i}).value = '';document.getElementById(v-vote-${i}).value = '';}} else {alert("Inserisci almeno un Nome e un Voto valido prima di salvare.");}}function renderVotesList() {const list = document.getElementById('votes-display-list');list.innerHTML = '';players.forEach(p => {if(p.voti.length > 0) {const ultimiVoti = p.voti.slice(-3).join(' | ');list.innerHTML += <li><b>${p.nome} ${p.cognome}</b> - Ultimi voti registrati: <span style="color:#f39c12">${ultimiVoti}</span></li>;}});}function renderTeams() {const container = document.getElementById('teams-container');container.innerHTML = '';const teamsMap = {};players.forEach(p => {if(!teamsMap[p.squadra]) teamsMap[p.squadra] = [];teamsMap[p.squadra].push(p);});for(let teamName in teamsMap) {let playersHTML = '';teamsMap[teamName].forEach(p => {playersHTML += <li style="cursor:pointer; color:#f39c12; font-weight:bold; padding:10px 0; border-bottom:1px dashed #333;" onclick="openPlayerModal(${p.id})"> 👤 ${p.nome} ${p.cognome} </li>;});container.innerHTML += <div class="card"> <h3 style="border-bottom: 2px solid #f39c12; padding-bottom:5px;">${teamName}</h3> <ul>${playersHTML}</ul> </div>;}}function openPlayerModal(playerId) {const p = players.find(x => x.id === playerId);if(!p) return;document.getElementById('modal-player-name').textContent = ${p.nome} ${p.cognome};document.getElementById('modal-player-team').textContent = p.squadra;let media = 0;if(p.voti && p.voti.length > 0) {let somma = p.voti.reduce((acc, v) => acc + v, 0);media = (somma / p.voti.length).toFixed(2);}document.getElementById('stat-media').textContent = media;document.getElementById('stat-gol').textContent = p.gol;document.getElementById('stat-assist').textContent = p.assist;document.getElementById('stat-gialli').textContent = p.gialli;document.getElementById('stat-rossi').textContent = p.rossi;document.getElementById('stat-autogol').textContent = p.autogol;document.getElementById('stat-rigori-sbagliati').textContent = p.rigoriSbagliati;document.getElementById('player-modal').style.display = 'flex';}function closeModal() {document.getElementById('player-modal').style.display = 'none';}function saveMVP() {const name = document.getElementById('mvp-name').value.trim();const match = document.getElementById('mvp-match').value.trim();const imgUrl = document.getElementById('mvp-img-url').value.trim() || 'placeholder.com';if(!name || !match) { alert("Nome giocatore e Partita/Giornata sono campi obbligatori."); return; }mvps.push({ name, match, imgUrl });localStorage.setItem('kl_mvps', JSON.stringify(mvps));document.getElementById('mvp-name').value = '';document.getElementById('mvp-match').value = '';document.getElementById('mvp-img-url').value = '';renderMVPs();}function renderMVPs() {const container = document.getElementById('mvp-container');container.innerHTML = '';mvps.forEach(m => {container.innerHTML += <div class="card" style="text-align:center;"> <img src="${m.imgUrl}" alt="Foto MVP" style="width:100%; max-height:220px; object-fit:cover; border-radius:5px; margin-bottom:10px; border: 1px solid #f39c12;"> <h3>${m.name}</h3> <p style="color:#aaa; font-size:0.9rem;">${m.match}</p> </div>;});}window.onload = function() {renderMatches();setupVotesForm();renderVotesList();renderTeams();renderMVPs();}
